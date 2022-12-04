@@ -82,6 +82,8 @@ func main() {
 	defer f.Close()
 
 	fmt.Println("part1: ", part1(f))
+
+	f.Seek(0, io.SeekStart)
 	fmt.Println("part2: ", part2(f))
 }
 
