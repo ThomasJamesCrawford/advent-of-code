@@ -29,25 +29,6 @@ type Monkey struct {
 	ifFalse   int
 }
 
-func GCD(a, b int) int {
-	for b != 0 {
-		t := b
-		b = a % b
-		a = t
-	}
-	return a
-}
-
-func LCM(a, b int, integers ...int) int {
-	result := a * b / GCD(a, b)
-
-	for i := 0; i < len(integers); i++ {
-		result = LCM(result, integers[i])
-	}
-
-	return result
-}
-
 func part1(input io.Reader) int {
 	scanner := bufio.NewScanner(input)
 
@@ -133,7 +114,7 @@ func part1(input io.Reader) int {
 			for _, item := range m.items {
 				value := m.operation(item) / 3
 
-				if value % m.test == 0 {
+				if value%m.test == 0 {
 					monkeys[m.ifTrue].items = append(monkeys[m.ifTrue].items, value)
 				} else {
 					monkeys[m.ifFalse].items = append(monkeys[m.ifFalse].items, value)
@@ -167,8 +148,7 @@ func part2(input io.Reader) int {
 	inspect := map[int]int{}
 	monkeyCount := 0
 
-	divisors := []int{}
-
+	commonMultiple := 1
 	for scanner.Scan() {
 		m := &Monkey{}
 
@@ -237,21 +217,19 @@ func part2(input io.Reader) int {
 		monkeys[monkeyCount] = m
 		monkeyCount++
 
-		divisors = append(divisors, m.test)
+		commonMultiple *= m.test
 
 		scanner.Scan()
 	}
-
-	lcm := LCM(divisors[0], divisors[1], divisors[2:]...)
 
 	for r := 1; r <= 10000; r++ {
 		for i := 0; i < len(monkeys); i++ {
 			m := monkeys[i]
 
 			for _, item := range m.items {
-				value := m.operation(item) % lcm
+				value := m.operation(item) % commonMultiple
 
-				if value % m.test == 0 {
+				if value%m.test == 0 {
 					monkeys[m.ifTrue].items = append(monkeys[m.ifTrue].items, value)
 				} else {
 					monkeys[m.ifFalse].items = append(monkeys[m.ifFalse].items, value)
