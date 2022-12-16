@@ -26,21 +26,6 @@ type Sensor struct {
 	Power int
 }
 
-func (s *Sensor) GetAllTouches() [][2]int {
-	res := [][2]int{}
-
-	fmt.Println("HERE")
-	for y := s.Pos[1] - s.Power; y < s.Pos[1]+s.Power; y++ {
-		for x := s.Pos[0] - s.Power; x < s.Pos[0]+s.Power; x++ {
-			if s.Touches(x, y) {
-				res = append(res, [2]int{x, y})
-			}
-		}
-	}
-
-	return res
-}
-
 func (s *Sensor) Touches(x, y int) bool {
 	sx, sy := s.Pos[0], s.Pos[1]
 
