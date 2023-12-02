@@ -36,33 +36,47 @@
 #
 # echo "$sum"
 
+# sum=0
+# while read -r line; do
+# 	red_max=0
+# 	green_max=0
+# 	blue_max=0
+#
+# 	for round in $(echo "$line" | cut -d: -f2 | tr -d "[:space:]" | tr -s ';' '\n'); do
+# 		for res in $(echo "$round" | tr -s ',' '\n'); do
+# 			count="$(echo "$res" | grep -oP '[0-9]+')"
+# 			colour="$(echo "$res" | grep -oP 'red|green|blue')"
+#
+# 			if [ "$colour" = "red" ] && ((count > red_max)); then
+# 				red_max=$((count))
+# 			fi
+#
+# 			if [ "$colour" = "blue" ] && ((count > blue_max)); then
+# 				blue_max=$((count))
+# 			fi
+#
+# 			if [ "$colour" = "green" ] && ((count > green_max)); then
+# 				green_max=$((count))
+# 			fi
+#
+# 		done
+# 	done
+#
+# 	sum=$((sum + blue_max * red_max * green_max))
+# done
+#
+# echo "$sum"
+
+# Attempt 2
+
 sum=0
 while read -r line; do
-	red_max=0
-	green_max=0
-	blue_max=0
-
-	for round in $(echo "$line" | cut -d: -f2 | tr -d "[:space:]" | tr -s ';' '\n'); do
-		for res in $(echo "$round" | tr -s ',' '\n'); do
-			count="$(echo "$res" | grep -oP '[0-9]+')"
-			colour="$(echo "$res" | grep -oP 'red|green|blue')"
-
-			if [ "$colour" = "red" ] && ((count > red_max)); then
-				red_max=$((count))
-			fi
-
-			if [ "$colour" = "blue" ] && ((count > blue_max)); then
-				blue_max=$((count))
-			fi
-
-			if [ "$colour" = "green" ] && ((count > green_max)); then
-				green_max=$((count))
-			fi
-
-		done
-	done
-
-	sum=$((sum + blue_max * red_max * green_max))
+	sum=$((
+		sum + \
+			$(echo "$line" | grep -oP "\d+ blue" | grep -oP "\d+" | sort -n | tail -n1) \
+			* $(echo "$line" | grep -oP "\d+ red" | grep -oP "\d+" | sort -n | tail -n1) \
+			* $(echo "$line" | grep -oP "\d+ green" | grep -oP "\d+" | sort -n | tail -n1) \
+		))
 done
 
 echo "$sum"
